@@ -1,0 +1,32 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(Creaseness)
+INCLUDE(${CMAKE_SOURCE_DIR}/IJMacros.txt)
+
+ENABLE_TESTING()
+INCLUDE(Dart)
+
+SET(Required_Packages
+  ITK
+)
+
+FOREACH(Package ${Required_Packages})
+   LOADPACKAGE(${Package})
+ENDFOREACH(Package)
+
+SET(Libraries
+  ITKBasicFilters
+  ITKCommon
+  ITKIO
+)
+
+#IF(BUILD_TESTING)
+  SET(CurrentExe "Creaseness")
+  ADD_EXECUTABLE(${CurrentExe} main.cxx) 
+  TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
+	SET(CurrentExe "ImageCompare")
+	ADD_EXECUTABLE(${CurrentExe} ImageCompare.cxx) 
+	TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
+#ENDIF(BUILD_TESTING)
+
+ADD_TEST(Crease2DTest Creaseness ${CMAKE_SOURCE_DIR}/distmap2.png 1.0 1.0 ${CMAKE_SOURCE_DIR}/distmapRidges.mhd)
+ADD_TEST(Crease2DTestComp ImageCompare ${CMAKE_SOURCE_DIR}/distmapRidges.mhd ${CMAKE_SOURCE_DIR}/distmapRidgesRef.mhd)
